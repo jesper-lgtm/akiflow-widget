@@ -98,6 +98,12 @@
       opacity: 0.35;
       cursor: default;
     }
+
+    #tap-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+    }
   </style>
 </head>
 <body>
@@ -106,7 +112,8 @@
     <h1>Add task</h1>
   </header>
 
-  <textarea id="task-input" placeholder="What needs to be done?" autofocus></textarea>
+  <textarea id="task-input" placeholder="What needs to be done?"></textarea>
+  <div id="tap-overlay"></div>
 
   <div class="bottom-bar">
     <div id="status"></div>
@@ -119,6 +126,14 @@
     const btn    = document.getElementById("send-btn");
     const input  = document.getElementById("task-input");
     const status = document.getElementById("status");
+
+    // Invisible full-screen overlay — first tap anywhere opens keyboard
+    // (Android blocks programmatic keyboard without a real user gesture)
+    const overlay = document.getElementById("tap-overlay");
+    overlay.addEventListener("touchend", () => {
+      overlay.remove();
+      input.focus();
+    }, { once: true });
 
     // Re-focus when app is resumed from background
     document.addEventListener("visibilitychange", () => {
