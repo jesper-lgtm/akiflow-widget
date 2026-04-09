@@ -106,7 +106,7 @@
     <h1>Add task</h1>
   </header>
 
-  <textarea id="task-input" placeholder="What needs to be done?"></textarea>
+  <textarea id="task-input" placeholder="What needs to be done?" autofocus></textarea>
 
   <div class="bottom-bar">
     <div id="status"></div>
@@ -120,10 +120,9 @@
     const input  = document.getElementById("task-input");
     const status = document.getElementById("status");
 
-    // Focus and show keyboard immediately on load
-    // Delay needed on Android PWA — browser won't open keyboard until page has settled
-    window.addEventListener("load", () => {
-      setTimeout(() => { input.click(); input.focus(); }, 300);
+    // Re-focus when app is resumed from background
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) setTimeout(() => input.focus(), 100);
     });
 
     // Keep bottom bar just above keyboard using Visual Viewport API
