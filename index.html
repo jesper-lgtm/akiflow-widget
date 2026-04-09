@@ -121,7 +121,10 @@
     const status = document.getElementById("status");
 
     // Focus and show keyboard immediately on load
-    window.addEventListener("load", () => input.focus());
+    // Delay needed on Android PWA — browser won't open keyboard until page has settled
+    window.addEventListener("load", () => {
+      setTimeout(() => { input.click(); input.focus(); }, 300);
+    });
 
     // Keep bottom bar just above keyboard using Visual Viewport API
     const bar = document.querySelector(".bottom-bar");
