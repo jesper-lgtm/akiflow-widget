@@ -1,0 +1,17 @@
+{
+  "name": "Add Task",
+  "short_name": "Add Task",
+  "description": "Quickly add a task to Akiflow",
+  "start_url": "/akiflow-widget/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
