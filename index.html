@@ -57,7 +57,15 @@
       justify-content: space-between;
       padding: 10px 16px;
       border-top: 1px solid #e5e5e5;
-      flex-shrink: 0;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+    }
+
+    #task-input {
+      padding-bottom: 80px;
     }
 
     #status {
@@ -113,6 +121,19 @@
 
     // Focus and show keyboard immediately on load
     window.addEventListener("load", () => input.focus());
+
+    // Keep bottom bar just above keyboard using Visual Viewport API
+    const bar = document.querySelector(".bottom-bar");
+    function updateBarPosition() {
+      const vv = window.visualViewport;
+      if (!vv) return;
+      const offset = window.innerHeight - vv.height - vv.offsetTop;
+      bar.style.bottom = offset + "px";
+    }
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", updateBarPosition);
+      window.visualViewport.addEventListener("scroll", updateBarPosition);
+    }
 
     function setStatus(msg, cls) {
       status.textContent = msg;
