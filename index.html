@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#ffffff">
+  <title>Add Task</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #fff;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e5e5e5;
+      flex-shrink: 0;
+    }
+
+    h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #111;
+    }
+
+    #send-btn {
+      background: #6c47ff;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 22px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+    }
+
+    #send-btn:active {
+      background: #5535d4;
+    }
+
+    #send-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    #task-input {
+      flex: 1;
+      width: 100%;
+      border: none;
+      outline: none;
+      resize: none;
+      font-size: 18px;
+      color: #111;
+      padding: 20px;
+      line-height: 1.5;
+      background: #fff;
+    }
+
+    #task-input::placeholder {
+      color: #aaa;
+    }
+
+    #status {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      flex-shrink: 0;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status-success { color: #16a34a; }
+    .status-error   { color: #dc2626; }
+    .status-loading { color: #6b7280; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Add task</h1>
+    <button id="send-btn">Send</button>
+  </header>
+
+  <textarea id="task-input" placeholder="What needs to be done?" autofocus></textarea>
+
+  <div id="status"></div>
+
+  <script>
+    const MAKE_WEBHOOK = "https://hook.eu1.make.com/85imet2z3ch33m24z6ecstkloi4l7y8y";
+
+    const btn   = document.getElementById("send-btn");
+    const input = document.getElementById("task-input");
+    const status = document.getElementById("status");
+
+    function setStatus(msg, cls) {
+      status.textContent = msg;
+      status.className = cls ? "status-" + cls : "";
+    }
+
+    async function sendTask() {
+      const title = input.value.trim();
+      if (!title) return;
+
+      btn.disabled = true;
+      setStatus("Sending…", "loading");
+
+      const now = new Date().toISOString();
+      const id  = crypto.randomUUID();
+
+      try {
+        const res = await fetch(MAKE_WEBHOOK, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, title, global_created_at: now, global_updated_at: now })
+        });
+
+        if (res.ok) {
+          setStatus("Task added!", "success");
+          input.value = "";
+          setTimeout(() => setStatus(""), 2500);
+        } else {
+          setStatus("Error " + res.status + " — try again", "error");
+        }
+      } catch (e) {
+        setStatus("Network error — try again", "error");
+      } finally {
+        btn.disabled = false;
+        input.focus();
+      }
+    }
+
+    btn.addEventListener("click", sendTask);
+
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendTask();
+      }
+    });
+  </script>
+
+</body>
+</html>
