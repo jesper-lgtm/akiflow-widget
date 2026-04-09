@@ -24,39 +24,14 @@
     }
 
     header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 20px;
-      border-bottom: 1px solid #e5e5e5;
+      padding: 20px 20px 8px;
       flex-shrink: 0;
     }
 
     h1 {
-      font-size: 18px;
-      font-weight: 600;
+      font-size: 22px;
+      font-weight: 700;
       color: #111;
-    }
-
-    #send-btn {
-      background: #6c47ff;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 22px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s, opacity 0.15s;
-    }
-
-    #send-btn:active {
-      background: #5535d4;
-    }
-
-    #send-btn:disabled {
-      opacity: 0.4;
-      cursor: default;
     }
 
     #task-input {
@@ -67,49 +42,77 @@
       resize: none;
       font-size: 18px;
       color: #111;
-      padding: 20px;
+      padding: 12px 20px 20px;
       line-height: 1.5;
       background: #fff;
     }
 
     #task-input::placeholder {
-      color: #aaa;
+      color: #bbb;
+    }
+
+    .bottom-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-top: 1px solid #e5e5e5;
+      flex-shrink: 0;
     }
 
     #status {
-      padding: 12px 20px;
       font-size: 14px;
       font-weight: 500;
-      text-align: center;
-      flex-shrink: 0;
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
     .status-success { color: #16a34a; }
     .status-error   { color: #dc2626; }
     .status-loading { color: #6b7280; }
+
+    #send-btn {
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    #send-btn:active {
+      opacity: 0.7;
+    }
+
+    #send-btn:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
   </style>
 </head>
 <body>
 
   <header>
     <h1>Add task</h1>
-    <button id="send-btn">Send</button>
   </header>
 
-  <textarea id="task-input" placeholder="What needs to be done?" autofocus></textarea>
+  <textarea id="task-input" placeholder="What needs to be done?"></textarea>
 
-  <div id="status"></div>
+  <div class="bottom-bar">
+    <div id="status"></div>
+    <button id="send-btn">Send</button>
+  </div>
 
   <script>
     const MAKE_WEBHOOK = "https://hook.eu1.make.com/85imet2z3ch33m24z6ecstkloi4l7y8y";
 
-    const btn   = document.getElementById("send-btn");
-    const input = document.getElementById("task-input");
+    const btn    = document.getElementById("send-btn");
+    const input  = document.getElementById("task-input");
     const status = document.getElementById("status");
+
+    // Focus and show keyboard immediately on load
+    window.addEventListener("load", () => input.focus());
 
     function setStatus(msg, cls) {
       status.textContent = msg;
